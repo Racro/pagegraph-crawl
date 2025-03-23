@@ -373,7 +373,7 @@ export const doCrawl = async (args: CrawlArgs,
       await page.close()
     }
     catch (err) {
-      logger.info('ERROR runtime fiasco from browser/page:', err)
+      logger.info('ERROR1 runtime fiasco from browser/page:', err)
     }
     finally {
       logger.info('Closing the browser')
@@ -381,7 +381,7 @@ export const doCrawl = async (args: CrawlArgs,
     }
   }
   catch (err) {
-    logger.info('ERROR runtime fiasco from infrastructure:', err)
+    logger.info('ERROR2 runtime fiasco from infrastructure:', err)
   }
   finally {
     envHandle.close()

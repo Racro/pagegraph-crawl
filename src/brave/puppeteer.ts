@@ -68,10 +68,10 @@ const profilePathForArgs = async (args: CrawlArgs): Promise<ProfilePath> => {
 
   const shouldClean = args.persistUserDataDirPath === undefined
 
-  if (isDir(destProfilePath)) {
-    logger.info(`Profile exists at ${String(destProfilePath)}, so deleting.`)
-    await deleteAtPath(destProfilePath)
-  }
+  // if (isDir(destProfilePath)) {
+  //   logger.info(`Profile exists at ${String(destProfilePath)}, so deleting.`)
+  //   await deleteAtPath(destProfilePath)
+  // }
 
   await cp(templateProfile, destProfilePath, {
     recursive: true,

@@ -3,10 +3,16 @@ import { tmpdir } from 'node:os';
 import { join, parse } from 'node:path';
 import { gzip } from 'node-gzip';
 import { isDir } from './checks.js';
+import * as crypto from 'node:crypto';
+
+function generateRandomHash(length) {
+    return crypto.randomBytes(length).toString('hex');
+}
+
 const dateTimeStamp = Math.floor(Date.now() / 1000);
 const createFilename = (url) => {
     const fileSafeUrl = String(url).replace(/[^\w]/g, '_');
-    return ['page_graph_', fileSafeUrl, '_', dateTimeStamp].join('');
+    return ['page_graph_', fileSafeUrl, '_', dateTimeStamp, '_', generateRandomHash(6)].join('');
 };
 const createOutputPath = (args, url) => {
     if (isDir(args.outputPath) === true) {

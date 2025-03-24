@@ -1,8 +1,7 @@
 import { cp } from 'node:fs/promises';
 import { join } from 'path';
 import puppeteerLib from 'puppeteer-core';
-import { isDir } from './checks.js';
-import { deleteAtPath, createTempDir } from './files.js';
+import { createTempDir } from './files.js';
 import { getLogger } from './logging.js';
 const disabledBraveFeatures = [
     'Speedreader',
@@ -48,10 +47,10 @@ const profilePathForArgs = async (args) => {
         ? args.persistUserDataDirPath
         : await createTempDir('pagegraph-profile-');
     const shouldClean = args.persistUserDataDirPath === undefined;
-    if (isDir(destProfilePath)) {
-        logger.info(`Profile exists at ${String(destProfilePath)}, so deleting.`);
-        await deleteAtPath(destProfilePath);
-    }
+    // if (isDir(destProfilePath)) {
+    //   logger.info(`Profile exists at ${String(destProfilePath)}, so deleting.`)
+    //   await deleteAtPath(destProfilePath)
+    // }
     await cp(templateProfile, destProfilePath, {
         recursive: true,
     });
@@ -92,7 +91,7 @@ const makePuppeteerConf = async (args) => {
         chromeArgs.push('--enable-logging=stderr');
         chromeArgs.push('--vmodule=page_graph*=2');
     }
-    if (args.extensionsPath !== undefined) {
+    if (args.extensionsPath !== undefined && args.extensionsPath !== 'control') {
         chromeArgs.push('--disable-extensions-except=' + args.extensionsPath);
         chromeArgs.push('--load-extension=' + args.extensionsPath);
     }

@@ -14,21 +14,21 @@ const setupEnv = (args) => {
     const platformName = osLib.platform();
     let xvfbHandle;
     const closeFunc = () => {
-        if (xvfbHandle !== undefined) {
-            logger.info('Tearing down Xvfb');
-            xvfbHandle.stopSync();
-        }
+        // if (xvfbHandle !== undefined) {
+        //     logger.info('Tearing down Xvfb');
+        //     xvfbHandle.stopSync();
+        // }
     };
     if (args.interactive) {
         logger.info('Interactive mode, skipping Xvfb');
     }
     else if (xvfbPlatforms.has(platformName)) {
-        logger.info(`Running on ${platformName}, starting Xvfb`);
-        xvfbHandle = new Xvbf({
-            // ensure 24-bit color depth or rendering might choke
-            xvfb_args: ['-screen', '0', '1024x768x24'],
-        });
-        xvfbHandle.startSync();
+        // logger.info(`Running on ${platformName}, starting Xvfb`);
+        // xvfbHandle = new Xvbf({
+        //     // ensure 24-bit color depth or rendering might choke
+        //     xvfb_args: ['-screen', '0', '1024x768x24'],
+        // });
+        // xvfbHandle.startSync();
     }
     else {
         logger.info(`Running on ${platformName}, Xvfb not supported`);
@@ -214,6 +214,21 @@ export const doCrawl = async (args, previouslySeenUrls) => {
                 }
             }
             logger.info('Loaded ', String(urlToCrawl));
+            
+
+            // Ritik
+            await new Promise(r => setTimeout(r, 2000));
+
+            const pages = await browser.pages();
+            for (const page of pages) {
+                const url = page.url();
+                console.log(url, String(urlToCrawl));
+                if (url !== String(urlToCrawl)) {
+                    await page.close();
+                    // break; // remove this if you want to close multiple matching tabs
+                }
+            }
+
             const response = await generatePageGraph(args.seconds, page, client, shouldStopWaitingFunc, logger);
             await writeGraphML(args, urlToCrawl, response, logger);
             // Store HAR
@@ -260,7 +275,7 @@ export const doCrawl = async (args, previouslySeenUrls) => {
             await page.close();
         }
         catch (err) {
-            logger.info('ERROR runtime fiasco from browser/page:', err);
+            logger.info('ERROR1 runtime fiasco from browser/page:', err);
         }
         finally {
             logger.info('Closing the browser');
@@ -268,7 +283,7 @@ export const doCrawl = async (args, previouslySeenUrls) => {
         }
     }
     catch (err) {
-        logger.info('ERROR runtime fiasco from infrastructure:', err);
+        logger.info('ERROR2 runtime fiasco from infrastructure:', err);
     }
     finally {
         envHandle.close();
